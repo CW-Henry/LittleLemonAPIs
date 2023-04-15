@@ -2,9 +2,10 @@ from django.shortcuts import render
 from django.db import IntegrityError
 from django.http import HttpResponse, JsonResponse
 from .models import MenuItem
+from django.contrib.auth.models import User, Group
 from django.views.decorators.csrf import csrf_exempt
 from django.forms.models import model_to_dict
-from .serializers import MenuItemSerializer, CategorySerializer
+from .serializers import MenuItemSerializer, CategorySerializer, UserGroupSerializer
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 
@@ -75,3 +76,11 @@ class MenuItemsView(generics.ListCreateAPIView):
 class SingleMenuItemView(generics.RetrieveUpdateDestroyAPIView):
     queryset = MenuItem.objects.all()
     serializer_class = MenuItemSerializer
+
+class UserGroupView(generics.ListCreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserGroupSerializer
+
+class UserGroupManagerView(generics.ListCreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserGroupSerializer
