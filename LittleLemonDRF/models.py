@@ -36,6 +36,6 @@ class MenuItem(models.Model):
         return self.title
 
 class Cart(models.Model):
+    user_token = models.CharField(max_length=128, null=True)
     menuitem = models.ForeignKey(MenuItem, on_delete=models.PROTECT, default=1)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    
