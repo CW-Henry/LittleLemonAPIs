@@ -1,11 +1,11 @@
 from django.shortcuts import render, get_object_or_404
 from django.db import IntegrityError
 from django.http import HttpResponse, JsonResponse
-from .models import MenuItem, Cart
+from .models import MenuItem, Cart, Order
 from django.contrib.auth.models import User, Group
 from django.views.decorators.csrf import csrf_exempt
 from django.forms.models import model_to_dict
-from .serializers import MenuItemSerializer, CategorySerializer, UserGroupSerializer, CartSerializer
+from .serializers import MenuItemSerializer, CategorySerializer, UserGroupSerializer, CartSerializer, OrdersManageSerializer
 from rest_framework import generics, viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -177,3 +177,17 @@ class CartViewSet(viewsets.ViewSet):
         Cart.objects.filter(user_id=request.user).delete()
         return Response({"Status": "Flushed Cart"},
                         status=status.HTTP_204_NO_CONTENT)
+
+
+class OrdersManageView(generics.ListCreateAPIView):
+    serializer_class = OrdersManageSerializer
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.AllowAny]
+
+    def get_queryset(self):
+        return Order.objects.filter(user_id=self.request.user)
+
+
+class SingleOrderManageView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = OrdersManageSerializer
+    queryset = Order.objects.all()

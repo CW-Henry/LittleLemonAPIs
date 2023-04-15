@@ -20,6 +20,8 @@ urlpatterns = [
             'get': 'list',
             'post': 'create',
             'delete': 'destroy'
-        }))
+        })),
+    path('orders', views.OrdersManageView.as_view()),
+    path('orders/<int:order_id>', views.SingleOrderManageView.as_view())
     # path('groups/manager', views)
 ]

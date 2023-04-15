@@ -45,3 +45,16 @@ class Cart(models.Model):
                                 on_delete=models.CASCADE,
                                 null=False,
                                 db_column="user_id")
+
+
+class Order(models.Model):
+    order_item = models.ForeignKey(MenuItem,
+                                   on_delete=models.PROTECT,
+                                   null=False,
+                                   db_column="order_item_id")
+    user_id = models.ForeignKey(User,
+                                on_delete=models.CASCADE,
+                                null=False,
+                                db_column="user_id")
+    delivery_status = models.SmallIntegerField(choices=[(0, 0), (1, 1)],
+                                               null=True)

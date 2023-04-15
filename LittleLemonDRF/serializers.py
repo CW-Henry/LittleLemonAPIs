@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import MenuItem, Category, Cart
+from .models import MenuItem, Category, Cart, Order
 from rest_framework.validators import UniqueTogetherValidator
 from django.contrib.auth.models import User, Group
 
@@ -72,11 +72,14 @@ class CartSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cart
         fields = ['menuitem', 'user_id']
-        extra_kwargs = {
-            'user_id': {
-                'read_only': True
-            },
-            'menuitem': {
-                'read_only': True
-            }
-        }
+        extra_kwargs = {'user_id': {'read_only': True}}
+
+
+class OrdersManageSerializer(serializers.ModelSerializer):
+    order_item = MenuItemSerializer()
+
+    # user = UserGroupSerializer(many=True)
+    class Meta:
+        model = Order
+        fields = '__all__'
+        extra_kwargs = {'user_id': {'read_only': True}}
