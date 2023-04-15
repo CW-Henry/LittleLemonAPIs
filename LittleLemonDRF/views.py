@@ -1,11 +1,11 @@
 from django.shortcuts import render, get_object_or_404
 from django.db import IntegrityError
 from django.http import HttpResponse, JsonResponse
-from .models import MenuItem, Cart
+from .models import MenuItem, Cart, Orders
 from django.contrib.auth.models import User, Group
 from django.views.decorators.csrf import csrf_exempt
 from django.forms.models import model_to_dict
-from .serializers import MenuItemSerializer, CategorySerializer, UserGroupSerializer, CartSerializer
+from .serializers import MenuItemSerializer, CategorySerializer, UserGroupSerializer, CartSerializer, OrdersManageSerializer
 from rest_framework import generics, viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -163,8 +163,8 @@ class CartViewSet(viewsets.ViewSet):
         data['user_id'] = str(request.user.id)
         data['user_token'] = str(request.auth)
         serializer = CartSerializer(data=data)
-        serializer.is_valid()
-        print(serializer.errors)
+        # serializer.is_valid()
+        # print(serializer.errors)
 
         if serializer.is_valid(raise_exception=True):
             serializer.save()
@@ -195,10 +195,39 @@ class OrdersManageView(generics.ListCreateAPIView):
             return super().list(request)
 
     def get_queryset(self):
-        print(Orders.objects.all())
+        # print(Orders.objects.all())
         return Orders.objects.filter(user_id=self.request.user.id)
+
+    def perform_create(self, serializer):
+        cart_queryset = Cart.objects.filter(user_id=self.request.user.id)
+        for item in cart_queryset:
+            item['user_id'] = self.request.user.id
+            item['delivery_status'] = 0
+            s = OrdersManageSerializer(data=item)
+            if s.is_valid():
+                s.save()
 
 
 class SingleOrderManageView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = OrdersManageSerializer
     queryset = Orders.objects.all()
+    lookup_url_kwarg = "order_id"
+
+    def get_queryset(self):
+        # print(Orders.objects.all())
+        return Orders.objects.filter(user_id=self.request.user.id)
+
+    def perform_update(self, serializer):
+        if self.request.user.groups.values_list('name',
+                                                flat=True) == 'Delivery crew':
+            data = self.request.data.copy()
+            for index, item in enumerate(data):
+                if index is not 'delivery_status':
+                    del data[index]
+            s = OrdersManageSerializer(data=data)
+            if s.is_valid(raise_exception=True):
+                s.save()
+                return Response({"Order": serializer.data},
+                                status=status.HTTP_204_NO_CONTENT)
+        else:
+            return super().perform_update()

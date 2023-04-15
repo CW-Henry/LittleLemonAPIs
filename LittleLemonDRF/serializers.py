@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import MenuItem, Category, Cart
+from .models import MenuItem, Category, Cart, Orders
 from rest_framework.validators import UniqueTogetherValidator
 from django.contrib.auth.models import User, Group
 
