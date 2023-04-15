@@ -38,3 +38,4 @@ class MenuItem(models.Model):
 class Cart(models.Model):
     menuitem = models.ForeignKey(MenuItem, on_delete=models.PROTECT, default=1)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    
