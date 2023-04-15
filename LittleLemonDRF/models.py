@@ -3,15 +3,15 @@ from django.contrib.auth.models import User
 
 
 # Create your models here.
-class Book(models.Model):
-    title = models.CharField(max_length=255)
-    author = models.CharField(max_length=255)
-    price = models.DecimalField(max_digits=5, decimal_places=2)
+# class Book(models.Model):
+#     title = models.CharField(max_length=255)
+#     author = models.CharField(max_length=255)
+#     price = models.DecimalField(max_digits=5, decimal_places=2)
 
-    class Meta:
-        indexes = [
-            models.Index(fields=['price']),
-        ]
+#     class Meta:
+#         indexes = [
+#             models.Index(fields=['price']),
+#         ]
 
 
 class Category(models.Model):
@@ -21,6 +21,10 @@ class Category(models.Model):
     def __str__(self) -> str:
         return self.title
 
+# class Rating(models.Model):
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     menuitem_id = models.SmallIntegerField()
+#     rating = models.SmallIntegerField()
 
 class MenuItem(models.Model):
     title = models.CharField(max_length=255)
@@ -32,7 +36,4 @@ class MenuItem(models.Model):
         return self.title
 
 
-class Rating(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    menuitem_id = models.SmallIntegerField()
-    rating = models.SmallIntegerField()
+

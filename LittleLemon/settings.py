@@ -24,7 +24,8 @@ SECRET_KEY = 'django-insecure-u&z+$39*-up8@w5729=%kh=ut7c3il8u)elpq#9+j3pk**j5)m
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
+CSRF_TRUSTED_ORIGINS = ['https://8000-cwhenry-littlelemonapis-6fbvyuz9b9b.ws-us94.gitpod.io']
 
 # Application definition
 
@@ -144,4 +145,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ),
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissions',
+    ]
 }
