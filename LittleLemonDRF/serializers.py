@@ -58,7 +58,7 @@ class MenuItemSerializer(serializers.ModelSerializer):
 #     }
 
 class UserGroupSerializer(serializers.ModelSerializer):
-    group = Group
+    # group = Group
 
     class Meta:
         model = User

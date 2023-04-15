@@ -78,8 +78,16 @@ class SingleMenuItemView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = MenuItemSerializer
 
 class UserGroupView(generics.ListCreateAPIView):
-    queryset = User.objects.all()
+    # queryset = User.objects.all()
     serializer_class = UserGroupSerializer
+    # lookup_url_kwarg = "name"
+    def get_queryset(self):
+        # print(self.kwargs['name'].capitalize())
+        group_id = Group.objects.filter(name=self.kwargs['name'].capitalize()).values_list('id', flat=True)[0]
+    #     user = User.objects.all()
+    #     name = Group.objects.get(pk=user.groups[0]).name
+        queryset = User.objects.filter(groups=group_id)
+        return queryset
 
 class UserGroupManagerView(generics.ListCreateAPIView):
     queryset = User.objects.all()
