@@ -38,11 +38,10 @@ class MenuItem(models.Model):
 
 
 class Cart(models.Model):
-    user_token = models.CharField(max_length=128, default="")
     menuitem = models.ForeignKey(MenuItem,
                                  on_delete=models.PROTECT,
-                                 default="")
+                                 null=False)
     user_id = models.ForeignKey(User,
                                 on_delete=models.CASCADE,
-                                default="",
+                                null=False,
                                 db_column="user_id")

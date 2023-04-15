@@ -138,19 +138,42 @@ class CartViewSet(viewsets.ViewSet):
     def list(self, request):
         if request.auth == None:
             return Response({"Cart": "User Token Not Found"},
-                            status=status.HTTP_404_NOT_FOUND)
-        queryset = Cart.objects.filter(user_token=request.auth)
+                            status=status.HTTP_403_FORBIDDEN)
+        queryset = Cart.objects.filter(user_id=request.user)
         serializer = CartSerializer(queryset, many=True)
-        return Response({"Cart": serializer.data})
+        try:
+            first_data = serializer.data[0]
+        except IndexError:
+            return Response({"Status": "No Content"},
+                            status=status.HTTP_404_NOT_FOUND)
+        return Response({
+            "user_id": first_data['user_id'],
+            "user_token": str(request.auth),
+            "Cart": [data['menuitem'] for data in serializer.data]
+        })
 
     def create(self, request):
         if request.auth == None:
             return Response({"Cart": "User Token Not Found"},
-                            status=status.HTTP_404_NOT_FOUND)
-        CartSerializer(data=request.data).save()
-        return Response({"Cart": "Created"}, status=status.HTTP_201_CREATED)
+                            status=status.HTTP_403_FORBIDDEN)
+        data = request.data.copy()
+        data['user_id'] = str(request.user)
+        data['user_token'] = str(request.auth)
+        serializer = CartSerializer(data=data)
+        serializer.is_valid()
+        print(serializer.errors)
 
-    def destroy(self, request, pk=None):
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response({"Cart": serializer.data},
+                            status=status.HTTP_201_CREATED)
+        return Response({"Status": "Creation Failed"},
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def destroy(self, request):
         if request.auth == None:
             return Response({"Cart": "User Token Not Found"},
-                            status=status.HTTP_404_NOT_FOUND)
+                            status=status.HTTP_403_FORBIDDEN)
+        Cart.objects.filter(user_id=request.user).delete()
+        return Response({"Status": "Flushed Cart"},
+                        status=status.HTTP_204_NO_CONTENT)

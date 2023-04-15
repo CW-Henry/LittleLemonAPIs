@@ -66,10 +66,17 @@ class UserGroupSerializer(serializers.ModelSerializer):
 
 
 class CartSerializer(serializers.ModelSerializer):
-    menuitem = MenuItemSerializer(read_only=True)
+    menuitem = MenuItemSerializer()
 
     # user = UserGroupSerializer(many=True)
     class Meta:
         model = Cart
-        fields = ['menuitem', 'user_token', 'user_id']
-        extra_kwargs = {'user_id': {'read_only': True}}
+        fields = ['menuitem', 'user_id']
+        extra_kwargs = {
+            'user_id': {
+                'read_only': True
+            },
+            'menuitem': {
+                'read_only': True
+            }
+        }
