@@ -222,7 +222,7 @@ class SingleOrderManageView(generics.RetrieveUpdateDestroyAPIView):
                                                 flat=True) == 'Delivery crew':
             data = self.request.data.copy()
             for index, item in enumerate(data):
-                if index is not 'delivery_status':
+                if index != 'delivery_status':
                     del data[index]
             s = OrdersManageSerializer(data=data)
             if s.is_valid(raise_exception=True):
