@@ -3,7 +3,6 @@ from .models import MenuItem, Category, Cart
 from rest_framework.validators import UniqueTogetherValidator
 from django.contrib.auth.models import User, Group
 
-
 # class BookSerializer(serializers.ModelSerializer):
 
 #     class Meta:
@@ -57,6 +56,7 @@ class MenuItemSerializer(serializers.ModelSerializer):
 #         },
 #     }
 
+
 class UserGroupSerializer(serializers.ModelSerializer):
     # group = Group
 
@@ -64,9 +64,11 @@ class UserGroupSerializer(serializers.ModelSerializer):
         model = User
         fields = '__all__'
 
+
 class CartSerializer(serializers.ModelSerializer):
-    # menuitem = MenuItemSerializer(many=True)
+    menuitem = MenuItemSerializer(read_only=True)
+
     # user = UserGroupSerializer(many=True)
     class Meta:
         model = Cart
-        fields = '__all__'
+        fields = ['menuitem', 'user_token', 'user_id']

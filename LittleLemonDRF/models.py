@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-
 # Create your models here.
 # class Book(models.Model):
 #     title = models.CharField(max_length=255)
@@ -21,10 +20,12 @@ class Category(models.Model):
     def __str__(self) -> str:
         return self.title
 
+
 # class Rating(models.Model):
 #     user = models.ForeignKey(User, on_delete=models.CASCADE)
 #     menuitem_id = models.SmallIntegerField()
 #     rating = models.SmallIntegerField()
+
 
 class MenuItem(models.Model):
     title = models.CharField(max_length=255)
@@ -35,7 +36,13 @@ class MenuItem(models.Model):
     def __str__(self) -> str:
         return self.title
 
+
 class Cart(models.Model):
-    user_token = models.CharField(max_length=128, null=True)
-    menuitem = models.ForeignKey(MenuItem, on_delete=models.PROTECT, default=1)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    user_token = models.CharField(max_length=128, default="")
+    menuitem = models.ForeignKey(MenuItem,
+                                 on_delete=models.PROTECT,
+                                 default="")
+    user_id = models.ForeignKey(User,
+                                on_delete=models.CASCADE,
+                                default="",
+                                db_column="user_id")
