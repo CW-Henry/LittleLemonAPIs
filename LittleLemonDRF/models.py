@@ -47,11 +47,11 @@ class Cart(models.Model):
                                 db_column="user_id")
 
 
-class Order(models.Model):
-    order_item = models.ForeignKey(MenuItem,
-                                   on_delete=models.PROTECT,
-                                   null=False,
-                                   db_column="order_item_id")
+class Orders(models.Model):
+    orderitem = models.ForeignKey(MenuItem,
+                                  on_delete=models.PROTECT,
+                                  null=False,
+                                  db_column="order_item_id")
     user_id = models.ForeignKey(User,
                                 on_delete=models.CASCADE,
                                 null=False,

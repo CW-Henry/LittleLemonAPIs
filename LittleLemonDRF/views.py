@@ -1,11 +1,11 @@
 from django.shortcuts import render, get_object_or_404
 from django.db import IntegrityError
 from django.http import HttpResponse, JsonResponse
-from .models import MenuItem, Cart, Order
+from .models import MenuItem, Cart
 from django.contrib.auth.models import User, Group
 from django.views.decorators.csrf import csrf_exempt
 from django.forms.models import model_to_dict
-from .serializers import MenuItemSerializer, CategorySerializer, UserGroupSerializer, CartSerializer, OrdersManageSerializer
+from .serializers import MenuItemSerializer, CategorySerializer, UserGroupSerializer, CartSerializer
 from rest_framework import generics, viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -136,10 +136,13 @@ class CartViewSet(viewsets.ViewSet):
     serializer_class = CartSerializer
 
     def list(self, request):
+        print(request.user)
+        print(request.user.id)
+        print(Cart.objects.filter(user_id=request.user.id))
         if request.auth == None:
             return Response({"Cart": "User Token Not Found"},
                             status=status.HTTP_403_FORBIDDEN)
-        queryset = Cart.objects.filter(user_id=request.user)
+        queryset = Cart.objects.filter(user_id=request.user.id)
         serializer = CartSerializer(queryset, many=True)
         try:
             first_data = serializer.data[0]
@@ -157,7 +160,7 @@ class CartViewSet(viewsets.ViewSet):
             return Response({"Cart": "User Token Not Found"},
                             status=status.HTTP_403_FORBIDDEN)
         data = request.data.copy()
-        data['user_id'] = str(request.user)
+        data['user_id'] = str(request.user.id)
         data['user_token'] = str(request.auth)
         serializer = CartSerializer(data=data)
         serializer.is_valid()
@@ -174,7 +177,7 @@ class CartViewSet(viewsets.ViewSet):
         if request.auth == None:
             return Response({"Cart": "User Token Not Found"},
                             status=status.HTTP_403_FORBIDDEN)
-        Cart.objects.filter(user_id=request.user).delete()
+        Cart.objects.filter(user_id=request.user.id).delete()
         return Response({"Status": "Flushed Cart"},
                         status=status.HTTP_204_NO_CONTENT)
 
@@ -184,10 +187,18 @@ class OrdersManageView(generics.ListCreateAPIView):
     authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.AllowAny]
 
+    def list(self, request):
+        if request.auth == None:
+            return Response({"Cart": "User Token Not Found"},
+                            status=status.HTTP_403_FORBIDDEN)
+        else:
+            return super().list(request)
+
     def get_queryset(self):
-        return Order.objects.filter(user_id=self.request.user)
+        print(Orders.objects.all())
+        return Orders.objects.filter(user_id=self.request.user.id)
 
 
 class SingleOrderManageView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = OrdersManageSerializer
-    queryset = Order.objects.all()
+    queryset = Orders.objects.all()
