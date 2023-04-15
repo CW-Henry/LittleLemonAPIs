@@ -133,6 +133,7 @@ class SingleUserGroupView(generics.RetrieveUpdateDestroyAPIView):
 class CartViewSet(viewsets.ViewSet):
     authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.AllowAny]
+    serializer_class = CartSerializer
 
     def list(self, request):
         if request.auth == None:
@@ -141,8 +142,15 @@ class CartViewSet(viewsets.ViewSet):
         queryset = Cart.objects.filter(user_token=request.auth)
         serializer = CartSerializer(queryset, many=True)
         return Response({"Cart": serializer.data})
-    
+
     def create(self, request):
-        pass
+        if request.auth == None:
+            return Response({"Cart": "User Token Not Found"},
+                            status=status.HTTP_404_NOT_FOUND)
+        CartSerializer(data=request.data).save()
+        return Response({"Cart": "Created"}, status=status.HTTP_201_CREATED)
+
     def destroy(self, request, pk=None):
-        pass
+        if request.auth == None:
+            return Response({"Cart": "User Token Not Found"},
+                            status=status.HTTP_404_NOT_FOUND)

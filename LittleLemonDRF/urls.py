@@ -14,6 +14,12 @@ urlpatterns = [
     path('groups/<str:name>/users', views.UserGroupView.as_view()),
     path('groups/<str:name>/users/<int:pk>',
          views.SingleUserGroupView.as_view()),
-    path('cart/menu-items', views.CartViewSet.as_view({'get': 'list'}))
+    path(
+        'cart/menu-items',
+        views.CartViewSet.as_view({
+            'get': 'list',
+            'post': 'create',
+            'delete': 'destroy'
+        }))
     # path('groups/manager', views)
 ]
