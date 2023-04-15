@@ -11,6 +11,8 @@ urlpatterns = [
     # path('ratings', views.RatingsView.as_view()),  
     path('menu-items', views.MenuItemsView.as_view()),
     path('menu-items/<int:pk>', views.SingleMenuItemView.as_view()),
-    path('groups/<str:name>', views.UserGroupView.as_view())
+    path('groups/<str:name>/users', views.UserGroupView.as_view()),
+    path('groups/<str:name>/users/<int:pk>', views.SingleUserGroupView.as_view()),
+    path('cart/menu-items', views.CartView.as_view())
     # path('groups/manager', views)
 ]

@@ -1,11 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.db import IntegrityError
 from django.http import HttpResponse, JsonResponse
-from .models import MenuItem
+from .models import MenuItem, Cart
 from django.contrib.auth.models import User, Group
 from django.views.decorators.csrf import csrf_exempt
 from django.forms.models import model_to_dict
-from .serializers import MenuItemSerializer, CategorySerializer, UserGroupSerializer
+from .serializers import MenuItemSerializer, CategorySerializer, UserGroupSerializer, CartSerializer
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 
@@ -82,14 +82,27 @@ class UserGroupView(generics.ListCreateAPIView):
     serializer_class = UserGroupSerializer
     # lookup_url_kwarg = "name"
     def get_queryset(self):
+        # user = User.objects.all()
+        # name = Group.objects.get(pk=user.groups[0]).name
         # print(self.kwargs['name'].replace('-', ' ').capitalize())
         cleaned_kwarg = self.kwargs['name'].replace('-', ' ').capitalize()
         group_id = Group.objects.filter(name=cleaned_kwarg).values_list('id', flat=True)[0]
-    #     user = User.objects.all()
-    #     name = Group.objects.get(pk=user.groups[0]).name
         queryset = User.objects.filter(groups=group_id)
         return queryset
 
-class UserGroupManagerView(generics.ListCreateAPIView):
-    queryset = User.objects.all()
+class SingleUserGroupView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserGroupSerializer
+    def get_queryset(self):
+        cleaned_kwarg = self.kwargs['name'].replace('-', ' ').capitalize()
+        group_id = Group.objects.filter(name=cleaned_kwarg).values_list('id', flat=True)[0]
+        queryset = User.objects.filter(groups=group_id)
+        return queryset
+
+class CartView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Cart.objects.all()
+    serializer_class = CartSerializer
+    def get_object(self):
+        queryset = self.get_queryset()
+        # obj = get_object_or_404(queryset, pk=1)
+        obj = Cart.objects.filter(pk=0)
+        return queryset
