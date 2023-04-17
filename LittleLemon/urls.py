@@ -18,15 +18,29 @@ from django.urls import path, include, re_path
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from rest_framework.response import Response
+from django.http import HttpResponse
+
+
+def read_file() -> str:
+    f = open('auth_credentials.md', 'r')
+    read_file = f.read()
+    f.close()
+    # with open('auth_credentials.md','r') as f:
+    #     read_file = f.read()
+    return read_file
+
+
+#     return HttpResponse(read_file, content_type="text/markdown")
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="Snippets API",
+        title="LittleLemon Restaurant API",
         default_version='v1',
-        description="Test description",
-        terms_of_service="https://www.google.com/policies/terms/",
-        contact=openapi.Contact(email="contact@snippets.local"),
-        license=openapi.License(name="BSD License"),
+        description=read_file(),
+        # terms_of_service="https://www.google.com/policies/terms/",
+        # contact=openapi.Contact(email="contact@snippets.local"),
+        # license=openapi.License(name="BSD License"),
     ),
     public=True,
     permission_classes=[permissions.AllowAny],
