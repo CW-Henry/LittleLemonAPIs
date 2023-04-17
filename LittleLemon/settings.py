@@ -25,7 +25,9 @@ SECRET_KEY = 'django-insecure-u&z+$39*-up8@w5729=%kh=ut7c3il8u)elpq#9+j3pk**j5)m
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
-CSRF_TRUSTED_ORIGINS = ['https://8000-cwhenry-littlelemonapis-6fbvyuz9b9b.ws-us94.gitpod.io']
+CSRF_TRUSTED_ORIGINS = [
+    'https://8000-cwhenry-littlelemonapis-6fbvyuz9b9b.ws-us94.gitpod.io'
+]
 
 # Application definition
 
@@ -40,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
