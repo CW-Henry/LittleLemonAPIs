@@ -12,6 +12,7 @@ python[ver] manage.py runserver
 ```
 If it runs, visit http://127.0.0.1:8000/swagger.
 
+
 You can specify specific python location if pipenv does not detect it automatically by 
 ```
 pipenv --python path/to/python
